@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>And Chess For All</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 24px 12px;
+      background: transparent;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    .acfa {
+      width: 100%;
+      max-width: 660px;
+      margin: 0 auto;
+      text-align: center;
+      background: transparent;
+      animation: acfaFadeIn .8s ease-out both;
+    }
+
+    .motto {
+      margin: 4px 0 12px;
+      color: #d8b25c;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 14px rgba(216,178,92,.35);
+      animation: mottoGlow 3s ease-in-out infinite;
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      margin: 24px 0;
+      background: linear-gradient(90deg, transparent, #7b5a22 20%, #d8b25c 50%, #7b5a22 80%, transparent);
+      background-size: 200% 100%;
+      animation: lineShimmer 5s linear infinite;
+    }
+
+    h3 {
+      margin: 0 0 16px;
+      color: #fff;
+    }
+
+    .grid {
+      width: 80%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    .item {
+      padding: 10px;
+      text-align: center;
+      background: transparent;
+      transition: transform .22s ease, filter .22s ease;
+    }
+
+    .item:hover {
+      transform: translateY(-4px);
+      filter: drop-shadow(0 0 10px rgba(216,178,92,.25));
+    }
+
+    .emoji {
+      font-size: 48px;
+      line-height: 1;
+      display: inline-block;
+      transform-origin: center;
+      animation: iconFloat 3.6s ease-in-out infinite;
+    }
+
+    .item:nth-child(2) .emoji { animation-delay: -.9s; }
+
+    .item a {
+      display: block;
+      margin-top: 10px;
+      color: #d8b25c;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .item a:hover,
+    .item a:focus-visible {
+      text-decoration: underline;
+    }
+
+
+
+    .holiday-countdowns {
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .holiday-grid {
+      width: 96%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .holiday {
+      min-width: 0;
+      padding: 10px 6px;
+      background: transparent;
+      position: relative;
+      transition: transform .22s ease, filter .22s ease;
+    }
+
+    .holiday::after {
+      content: "";
+      position: absolute;
+      left: 16%;
+      right: 16%;
+      bottom: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(216,178,92,.72), transparent);
+      opacity: .72;
+    }
+
+    .holiday:hover {
+      transform: translateY(-3px);
+      filter: drop-shadow(0 0 10px rgba(216,178,92,.20));
+    }
+
+    .holiday-icon {
+      display: inline-block;
+      font-size: 38px;
+      line-height: 1;
+      margin-bottom: 8px;
+      animation: holidayFloat 4s ease-in-out infinite;
+    }
+
+    .holiday:nth-child(2) .holiday-icon { animation-delay: -1.3s; }
+    .holiday:nth-child(3) .holiday-icon { animation-delay: -2.6s; }
+
+    .holiday-name {
+      margin: 0 0 7px;
+      color: #d8b25c;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .holiday-time {
+      margin: 0;
+      color: #fff;
+      font-size: 13px;
+      line-height: 1.5;
+      font-variant-numeric: tabular-nums;
+      text-shadow: 0 0 10px rgba(255,255,255,.14);
+      white-space: nowrap;
+    }
+
+    .holiday-date {
+      margin: 5px 0 0;
+      color: #c9c9c9;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .copy-wrap {
+      margin: 24px auto 4px;
+    }
+
+    .copy-icon {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 10px;
+      display: inline-block;
+      animation: iconFloat 3.4s ease-in-out infinite -1.4s;
+    }
+
+    #copyClubUrl {
+      display: inline-block;
+      min-width: 180px;
+      padding: 12px 24px;
+      background: #d8b25c;
+      color: #111;
+      border: 0;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform .15s ease, filter .15s ease;
+    }
+
+    #copyClubUrl:hover {
+      filter: brightness(1.08) drop-shadow(0 0 10px rgba(216,178,92,.35));
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    #copyClubUrl:active {
+      transform: translateY(0);
+    }
+
+    #copyStatus {
+      min-height: 20px;
+      margin: 8px 0 0;
+      color: #d6d6d6;
+      font-size: 13px;
+    }
+
+
+    @keyframes acfaFadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes iconFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(1deg); }
+    }
+
+    @keyframes holidayFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-4px) scale(1.03); }
+    }
+
+    @keyframes mottoGlow {
+      0%, 100% { text-shadow: 0 0 8px rgba(216,178,92,.20); }
+      50% { text-shadow: 0 0 18px rgba(216,178,92,.52); }
+    }
+
+    @keyframes lineShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 18px 8px; }
+      .grid { width: 100%; gap: 8px; }
+      .holiday-grid { width: 100%; grid-template-columns: 1fr; gap: 8px; }
+      .holiday { padding: 9px 4px 12px; }
+      .holiday-icon { font-size: 34px; }
+      .holiday-time { font-size: 13px; }
+      .emoji, .copy-icon { font-size: 44px; }
+      .item { padding: 8px 4px; }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="acfa">
+
+    <p class="motto">Every Player Belongs • Every Move Matters</p>
+
+    <hr>
+
+
+    <section class="holiday-countdowns" aria-labelledby="holidayTitle">
+      <h3 id="holidayTitle">Holiday Countdowns</h3>
+
+      <div class="holiday-grid">
+        <div class="holiday" aria-label="Countdown to Halloween">
+          <div class="holiday-icon">🎃</div>
+          <p class="holiday-name">Halloween</p>
+          <p class="holiday-time" id="halloweenCountdown">Loading countdown…</p>
+          <p class="holiday-date" id="halloweenDate"></p>
+        </div>
+
+        <div class="holiday" aria-label="Countdown to Christmas">
+          <div class="holiday-icon">🎄</div>
+          <p class="holiday-name">Christmas</p>
+          <p class="holiday-time" id="christmasCountdown">Loading countdown…</p>
+          <p class="holiday-date" id="christmasDate"></p>
+        </div>
+
+        <div class="holiday" aria-label="Countdown to New Year's Day">
+          <div class="holiday-icon">🎆</div>
+          <p class="holiday-name">New Year</p>
+          <p class="holiday-time" id="newyearCountdown">Loading countdown…</p>
+          <p class="holiday-date" id="newyearDate"></p>
+        </div>
+      </div>
+    </section>
+
+    <hr>
+
+    <h3>Events &amp; Competition</h3>
+
+    <div class="grid">
+      <div class="item">
+        <div class="emoji">⚔️</div>
+        <a href="https://www.chess.com/clubs/matches/and-chess-for-all-official"
+           target="_blank" rel="noopener noreferrer">
+          Daily Matches
+        </a>
+      </div>
+
+      <div class="item">
+        <div class="emoji">🏆</div>
+        <a href="https://www.chess.com/clubs/events/and-chess-for-all-official"
+           target="_blank" rel="noopener noreferrer">
+          Club Events
+        </a>
+      </div>
+    </div>
+
+    <hr>
+
+    <h3>Community</h3>
+
+    <div class="grid">
+      <div class="item">
+        <div class="emoji">📋</div>
+        <a href="https://www.chess.com/clubs/forum/and-chess-for-all-official"
+           target="_blank" rel="noopener noreferrer">
+          Forums
+        </a>
+      </div>
+
+      <div class="item">
+        <div class="emoji">🌐</div>
+        <a href="https://devilsgambit22.github.io/And-Chess-For-All-Official-Chess-Club/"
+           target="_blank" rel="noopener noreferrer">
+          Website
+        </a>
+      </div>
+    </div>
+
+    <div class="copy-wrap">
+      <div class="copy-icon">🔗</div>
+      <button id="copyClubUrl" type="button">Copy Club URL</button>
+      <p id="copyStatus" aria-live="polite"></p>
+    </div>
+
+    <hr>
+
+    <h3>Recognition</h3>
+
+    <div class="grid">
+      <div class="item">
+        <div class="emoji">👑</div>
+        <a href="https://www.chess.com/clubs/forum/view/spotlight-archive"
+           target="_blank" rel="noopener noreferrer">
+          Hall of Honor
+        </a>
+      </div>
+
+      <div class="item">
+        <div class="emoji">⭐</div>
+        <a href="https://www.chess.com/clubs/forum/view/welcome-to-the-acfa-family-monthly-member-board"
+           target="_blank" rel="noopener noreferrer">
+          Member Spotlight
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+
+
+    const holidayDefinitions = [
+      {
+        countdownId: "halloweenCountdown",
+        dateId: "halloweenDate",
+        getTarget(now) {
+          let target = new Date(now.getFullYear(), 9, 31, 0, 0, 0, 0);
+          if (now >= new Date(now.getFullYear(), 10, 1, 0, 0, 0, 0)) {
+            target = new Date(now.getFullYear() + 1, 9, 31, 0, 0, 0, 0);
+          }
+          return target;
+        }
+      },
+      {
+        countdownId: "christmasCountdown",
+        dateId: "christmasDate",
+        getTarget(now) {
+          let target = new Date(now.getFullYear(), 11, 25, 0, 0, 0, 0);
+          if (now >= new Date(now.getFullYear(), 11, 26, 0, 0, 0, 0)) {
+            target = new Date(now.getFullYear() + 1, 11, 25, 0, 0, 0, 0);
+          }
+          return target;
+        }
+      },
+      {
+        countdownId: "newyearCountdown",
+        dateId: "newyearDate",
+        getTarget(now) {
+          return new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
+        }
+      }
+    ];
+
+    const holidayDateFormatter = new Intl.DateTimeFormat(undefined, {
+      month: "short",
+      day: "numeric",
+      year: "numeric"
+    });
+
+    function formatRemaining(ms) {
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    function updateHolidayCountdowns() {
+      const now = new Date();
+
+      holidayDefinitions.forEach((holiday) => {
+        const target = holiday.getTarget(now);
+        const countdown = document.getElementById(holiday.countdownId);
+        const date = document.getElementById(holiday.dateId);
+
+        if (countdown) countdown.textContent = formatRemaining(target - now);
+        if (date) date.textContent = holidayDateFormatter.format(target);
+      });
+    }
+
+    updateHolidayCountdowns();
+    window.setInterval(updateHolidayCountdowns, 1000);
+
+    const clubUrl = "https://www.chess.com/club/and-chess-for-all-official";
+    const button = document.getElementById("copyClubUrl");
+    const status = document.getElementById("copyStatus");
+
+    button.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(clubUrl);
+        button.textContent = "✅ Copied!";
+        status.textContent = "ACFA club URL copied to your clipboard.";
+      } catch (error) {
+        // Fallback for browsers that do not expose the Clipboard API.
+        const textArea = document.createElement("textarea");
+        textArea.value = clubUrl;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        const copied = document.execCommand("copy");
+        document.body.removeChild(textArea);
+
+        if (copied) {
+          button.textContent = "✅ Copied!";
+          status.textContent = "ACFA club URL copied to your clipboard.";
+        } else {
+          button.textContent = "Copy failed";
+          status.textContent = "Copying was blocked by this browser.";
+        }
+      }
+
+      window.setTimeout(() => {
+        button.textContent = "Copy Club URL";
+        status.textContent = "";
+      }, 1800);
+    });
+  </script>
+
+</body>
+</html>
