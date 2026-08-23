@@ -5,472 +5,1325 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="dark">
   <title>And Chess For All</title>
+
   <style>
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; }
+    :root {
+      --gold: #d8b25c;
+      --gold-soft: #efd48e;
+      --gold-dark: #7b5a22;
+      --white: #ffffff;
+      --muted: #d5d5d5;
+      --shadow: rgba(0,0,0,.72);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
     body {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 24px 12px;
-      background: transparent;
-      color: #fff;
-      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100%;
+      background: transparent !important;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--white);
       overflow-x: hidden;
     }
 
-    .acfa {
+    button,
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .acfa-shell {
+      position: relative;
       width: 100%;
-      max-width: 660px;
+      max-width: 680px;
       margin: 0 auto;
+      padding: 18px 10px 36px;
       text-align: center;
-      background: transparent;
-      animation: acfaFadeIn .8s ease-out both;
+      background: transparent !important;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* =========================
+       AMBIENT GOLD PARTICLES
+       ========================= */
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      bottom: -16px;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(216,178,92,.72);
+      box-shadow: 0 0 8px rgba(216,178,92,.4);
+      opacity: 0;
+      animation: particleRise linear infinite;
+    }
+
+    @keyframes particleRise {
+      0% {
+        transform: translateY(0) scale(.6);
+        opacity: 0;
+      }
+
+      15% {
+        opacity: .38;
+      }
+
+      75% {
+        opacity: .18;
+      }
+
+      100% {
+        transform: translateY(-1100px) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    /* =========================
+       TOP CREST
+       ========================= */
+
+    .crest {
+      margin-bottom: 8px;
+      font-size: 54px;
+      line-height: 1;
+      filter: drop-shadow(0 0 12px rgba(216,178,92,.25));
+      animation: crestFloat 5s ease-in-out infinite;
+    }
+
+    @keyframes crestFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .title {
+      margin: 0;
+      color: var(--white);
+      font-size: clamp(24px, 5vw, 34px);
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      text-shadow:
+        0 2px 6px var(--shadow),
+        0 0 16px rgba(216,178,92,.15);
     }
 
     .motto {
-      margin: 4px 0 12px;
-      color: #d8b25c;
-      font-size: 18px;
-      font-weight: bold;
-      text-shadow: 0 0 14px rgba(216,178,92,.35);
-      animation: mottoGlow 3s ease-in-out infinite;
-    }
-
-    hr {
-      border: 0;
-      height: 1px;
-      margin: 24px 0;
-      background: linear-gradient(90deg, transparent, #7b5a22 20%, #d8b25c 50%, #7b5a22 80%, transparent);
-      background-size: 200% 100%;
-      animation: lineShimmer 5s linear infinite;
-    }
-
-    h3 {
-      margin: 0 0 16px;
-      color: #fff;
-    }
-
-    .grid {
-      width: 80%;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-
-    .item {
-      padding: 10px;
-      text-align: center;
-      background: transparent;
-      transition: transform .22s ease, filter .22s ease;
-    }
-
-    .item:hover {
-      transform: translateY(-4px);
-      filter: drop-shadow(0 0 10px rgba(216,178,92,.25));
-    }
-
-    .emoji {
-      font-size: 48px;
-      line-height: 1;
-      display: inline-block;
-      transform-origin: center;
-      animation: iconFloat 3.6s ease-in-out infinite;
-    }
-
-    .item:nth-child(2) .emoji { animation-delay: -.9s; }
-
-    .item a {
-      display: block;
-      margin-top: 10px;
-      color: #d8b25c;
-      font-weight: bold;
-      text-decoration: none;
+      margin: 8px 0 16px;
+      color: var(--gold);
       font-size: 16px;
-    }
-
-    .item a:hover,
-    .item a:focus-visible {
-      text-decoration: underline;
-    }
-
-
-
-    .holiday-countdowns {
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    .holiday-grid {
-      width: 96%;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .holiday {
-      min-width: 0;
-      padding: 10px 6px;
-      background: transparent;
-      position: relative;
-      transition: transform .22s ease, filter .22s ease;
-    }
-
-    .holiday::after {
-      content: "";
-      position: absolute;
-      left: 16%;
-      right: 16%;
-      bottom: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(216,178,92,.72), transparent);
-      opacity: .72;
-    }
-
-    .holiday:hover {
-      transform: translateY(-3px);
-      filter: drop-shadow(0 0 10px rgba(216,178,92,.20));
-    }
-
-    .holiday-icon {
-      display: inline-block;
-      font-size: 38px;
-      line-height: 1;
-      margin-bottom: 8px;
-      animation: holidayFloat 4s ease-in-out infinite;
-    }
-
-    .holiday:nth-child(2) .holiday-icon { animation-delay: -1.3s; }
-    .holiday:nth-child(3) .holiday-icon { animation-delay: -2.6s; }
-
-    .holiday-name {
-      margin: 0 0 7px;
-      color: #d8b25c;
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .holiday-time {
-      margin: 0;
-      color: #fff;
-      font-size: 13px;
-      line-height: 1.5;
-      font-variant-numeric: tabular-nums;
-      text-shadow: 0 0 10px rgba(255,255,255,.14);
-      white-space: nowrap;
-    }
-
-    .holiday-date {
-      margin: 5px 0 0;
-      color: #c9c9c9;
-      font-size: 11px;
-      line-height: 1.35;
-    }
-
-    .copy-wrap {
-      margin: 24px auto 4px;
-    }
-
-    .copy-icon {
-      font-size: 48px;
-      line-height: 1;
-      margin-bottom: 10px;
-      display: inline-block;
-      animation: iconFloat 3.4s ease-in-out infinite -1.4s;
-    }
-
-    #copyClubUrl {
-      display: inline-block;
-      min-width: 180px;
-      padding: 12px 24px;
-      background: #d8b25c;
-      color: #111;
-      border: 0;
-      border-radius: 8px;
-      font-family: Arial, sans-serif;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform .15s ease, filter .15s ease;
-    }
-
-    #copyClubUrl:hover {
-      filter: brightness(1.08) drop-shadow(0 0 10px rgba(216,178,92,.35));
-      transform: translateY(-2px) scale(1.02);
-    }
-
-    #copyClubUrl:active {
-      transform: translateY(0);
-    }
-
-    #copyStatus {
-      min-height: 20px;
-      margin: 8px 0 0;
-      color: #d6d6d6;
-      font-size: 13px;
-    }
-
-
-    @keyframes acfaFadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes iconFloat {
-      0%, 100% { transform: translateY(0) rotate(0deg); }
-      50% { transform: translateY(-5px) rotate(1deg); }
-    }
-
-    @keyframes holidayFloat {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-4px) scale(1.03); }
+      font-weight: 700;
+      text-shadow:
+        0 2px 5px var(--shadow),
+        0 0 10px rgba(216,178,92,.38);
+      animation: mottoGlow 3.6s ease-in-out infinite;
     }
 
     @keyframes mottoGlow {
-      0%, 100% { text-shadow: 0 0 8px rgba(216,178,92,.20); }
-      50% { text-shadow: 0 0 18px rgba(216,178,92,.52); }
+      0%, 100% {
+        text-shadow:
+          0 2px 5px var(--shadow),
+          0 0 8px rgba(216,178,92,.22);
+      }
+
+      50% {
+        text-shadow:
+          0 2px 5px var(--shadow),
+          0 0 18px rgba(216,178,92,.65);
+      }
     }
 
-    @keyframes lineShimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+    .status-strip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 13px;
+      border: 1px solid rgba(216,178,92,.36);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 4px var(--shadow);
     }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 10px rgba(216,178,92,.7);
+      animation: statusPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% {
+        opacity: .55;
+        transform: scale(.9);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.25);
+      }
+    }
+
+    /* =========================
+       ORNAMENTAL DIVIDERS
+       ========================= */
+
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      margin: 24px auto;
+    }
+
+    .ornament-line {
+      flex: 1;
+      height: 1px;
+      background:
+        linear-gradient(
+          90deg,
+          transparent,
+          rgba(123,90,34,.8),
+          var(--gold),
+          rgba(123,90,34,.8),
+          transparent
+        );
+      background-size: 220% 100%;
+      animation: ornamentSweep 5.5s linear infinite;
+    }
+
+    .ornament-symbol {
+      color: var(--gold);
+      font-size: 12px;
+      opacity: .9;
+      text-shadow: 0 0 8px rgba(216,178,92,.35);
+    }
+
+    @keyframes ornamentSweep {
+      from {
+        background-position: 210% center;
+      }
+
+      to {
+        background-position: -210% center;
+      }
+    }
+
+    /* =========================
+       HOLIDAY COUNTDOWNS
+       ========================= */
+
+    .section-heading {
+      margin: 0 0 18px;
+      color: var(--white);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      text-shadow:
+        0 2px 6px var(--shadow),
+        0 0 8px rgba(216,178,92,.14);
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      width: 100%;
+    }
+
+    .countdown {
+      min-width: 0;
+      padding: 8px 3px;
+      background: transparent;
+      animation: riseIn .7s ease both;
+    }
+
+    .countdown:nth-child(2) {
+      animation-delay: .08s;
+    }
+
+    .countdown:nth-child(3) {
+      animation-delay: .16s;
+    }
+
+    .holiday-icon {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 38px;
+      line-height: 1;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,.45));
+      animation: holidayFloat 4s ease-in-out infinite;
+    }
+
+    .countdown:nth-child(2) .holiday-icon {
+      animation-delay: .6s;
+    }
+
+    .countdown:nth-child(3) .holiday-icon {
+      animation-delay: 1.2s;
+    }
+
+    @keyframes holidayFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .holiday-name {
+      color: var(--gold);
+      font-size: 13px;
+      font-weight: 800;
+      text-shadow: 0 2px 4px var(--shadow);
+    }
+
+    .holiday-time {
+      margin-top: 4px;
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+      text-shadow: 0 2px 5px var(--shadow);
+    }
+
+    .holiday-date {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 9px;
+      text-shadow: 0 2px 4px var(--shadow);
+    }
+
+    /* =========================
+       EXPANDABLE MONUMENT SECTIONS
+       ========================= */
+
+    .monument {
+      width: 100%;
+      margin: 0 auto 16px;
+      background: transparent;
+    }
+
+    .monument-toggle {
+      width: 100%;
+      border: 0;
+      padding: 14px 8px 12px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      text-align: center;
+      font-family: inherit;
+    }
+
+    .monument-icon {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 46px;
+      line-height: 1;
+      filter: drop-shadow(0 3px 7px rgba(0,0,0,.45));
+      animation: iconFloat 4.4s ease-in-out infinite;
+    }
+
+    @keyframes iconFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .monument-title {
+      display: block;
+      color: var(--white);
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      text-shadow:
+        0 2px 6px var(--shadow),
+        0 0 10px rgba(216,178,92,.12);
+    }
+
+    .monument-sub {
+      display: block;
+      margin-top: 4px;
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      text-shadow: 0 2px 4px var(--shadow);
+    }
+
+    .chevron {
+      display: inline-block;
+      margin-top: 8px;
+      color: var(--gold);
+      font-size: 14px;
+      transition: transform .25s ease;
+    }
+
+    .monument.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    .monument-panel {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition:
+        max-height .42s ease,
+        opacity .3s ease,
+        padding .3s ease;
+    }
+
+    .monument.open .monument-panel {
+      max-height: 420px;
+      opacity: 1;
+      padding-top: 6px;
+    }
+
+    .monument-inner {
+      width: 84%;
+      margin: 0 auto;
+      padding: 8px 0 2px;
+    }
+
+    /* =========================
+       NAV LINKS
+       ========================= */
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      width: 100%;
+    }
+
+    .nav-item {
+      position: relative;
+      min-width: 0;
+      padding: 12px 6px;
+      background: transparent;
+      transition:
+        transform .22s ease,
+        filter .22s ease;
+    }
+
+    .nav-item::after {
+      content: "";
+      position: absolute;
+      inset: 8px 22%;
+      z-index: -1;
+      border-radius: 50%;
+      background:
+        radial-gradient(
+          circle,
+          rgba(216,178,92,.12),
+          transparent 72%
+        );
+      opacity: 0;
+      transform: scale(.8);
+      transition:
+        opacity .22s ease,
+        transform .22s ease;
+      pointer-events: none;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 44px;
+      line-height: 1;
+      filter: drop-shadow(0 3px 7px rgba(0,0,0,.45));
+      animation: navFloat 4.2s ease-in-out infinite;
+    }
+
+    .nav-item:nth-child(2) .nav-icon {
+      animation-delay: .7s;
+    }
+
+    @keyframes navFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .nav-link,
+    .copy-nav {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-decoration: none;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .nav-label,
+    .copy-label {
+      margin-top: 9px;
+      color: var(--gold);
+      font-size: 15px;
+      font-weight: 800;
+      text-shadow: 0 2px 5px var(--shadow);
+      transition:
+        color .2s ease,
+        text-shadow .2s ease;
+    }
+
+    .copy-nav {
+      padding: 0;
+    }
+
+    .copy-status {
+      min-height: 18px;
+      margin: 5px 0 0;
+      color: var(--gold-soft);
+      font-size: 11px;
+      font-weight: 700;
+      text-shadow: 0 2px 4px var(--shadow);
+    }
+
+    @media (hover:hover) and (pointer:fine) {
+      .nav-item:hover {
+        transform: translateY(-5px) scale(1.025);
+        filter: brightness(1.08);
+      }
+
+      .nav-item:hover::after {
+        opacity: 1;
+        transform: scale(1.25);
+      }
+
+      .nav-item:hover .nav-label,
+      .nav-item:hover .copy-label {
+        color: var(--gold-soft);
+        text-shadow:
+          0 2px 5px var(--shadow),
+          0 0 12px rgba(216,178,92,.6);
+      }
+    }
+
+    /* =========================
+       ENTRANCE
+       ========================= */
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 500px) {
+      .acfa-shell {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+
+      .crest {
+        font-size: 48px;
+      }
+
+      .motto {
+        font-size: 14px;
+      }
+
+      .status-strip {
+        font-size: 9px;
+      }
+
+      .countdown-grid {
+        gap: 3px;
+      }
+
+      .holiday-icon {
+        font-size: 33px;
+      }
+
+      .holiday-name {
+        font-size: 11px;
+      }
+
+      .holiday-time {
+        font-size: 9px;
+      }
+
+      .holiday-date {
+        font-size: 8px;
+      }
+
+      .monument-title {
+        font-size: 16px;
+      }
+
+      .monument-icon {
+        font-size: 42px;
+      }
+
+      .monument-inner {
+        width: 100%;
+      }
+
+      .nav-grid {
+        gap: 8px;
+      }
+
+      .nav-icon {
+        font-size: 40px;
+      }
+
+      .nav-label,
+      .copy-label {
+        font-size: 14px;
+      }
+    }
+
+    /* =========================
+       REDUCED MOTION
+       ========================= */
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
+      *,
+      *::before,
+      *::after {
         animation-duration: .01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: .01ms !important;
       }
     }
-
-    @media (max-width: 480px) {
-      body { padding: 18px 8px; }
-      .grid { width: 100%; gap: 8px; }
-      .holiday-grid { width: 100%; grid-template-columns: 1fr; gap: 8px; }
-      .holiday { padding: 9px 4px 12px; }
-      .holiday-icon { font-size: 34px; }
-      .holiday-time { font-size: 13px; }
-      .emoji, .copy-icon { font-size: 44px; }
-      .item { padding: 8px 4px; }
-    }
   </style>
 </head>
+
 <body>
 
-  <main class="acfa">
+  <main class="acfa-shell">
 
-    <p class="motto">Every Player Belongs • Every Move Matters</p>
+    <div class="particles" id="particles" aria-hidden="true"></div>
 
-    <hr>
+    <div class="content">
 
+      <div class="crest" aria-hidden="true">⚖️</div>
 
-    <section class="holiday-countdowns" aria-labelledby="holidayTitle">
-      <h3 id="holidayTitle">Holiday Countdowns</h3>
+      <h1 class="title">And Chess For All</h1>
 
-      <div class="holiday-grid">
-        <div class="holiday" aria-label="Countdown to Halloween">
-          <div class="holiday-icon">🎃</div>
-          <p class="holiday-name">Halloween</p>
-          <p class="holiday-time" id="halloweenCountdown">Loading countdown…</p>
-          <p class="holiday-date" id="halloweenDate"></p>
+      <p class="motto">
+        Every Player Belongs • Every Move Matters
+      </p>
+
+      <div class="status-strip">
+        <span class="status-dot" aria-hidden="true"></span>
+        ACFA Online • Community Active
+      </div>
+
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-symbol">◆</span>
+        <span class="ornament-line"></span>
+      </div>
+
+      <!-- HOLIDAYS -->
+
+      <section>
+
+        <h2 class="section-heading">Holiday Countdowns</h2>
+
+        <div class="countdown-grid">
+
+          <div class="countdown">
+            <span class="holiday-icon" aria-hidden="true">🎃</span>
+            <div class="holiday-name">Halloween</div>
+            <div class="holiday-time" id="halloweenTimer">Loading...</div>
+            <div class="holiday-date" id="halloweenDate"></div>
+          </div>
+
+          <div class="countdown">
+            <span class="holiday-icon" aria-hidden="true">🎄</span>
+            <div class="holiday-name">Christmas</div>
+            <div class="holiday-time" id="christmasTimer">Loading...</div>
+            <div class="holiday-date" id="christmasDate"></div>
+          </div>
+
+          <div class="countdown">
+            <span class="holiday-icon" aria-hidden="true">🎆</span>
+            <div class="holiday-name">New Year</div>
+            <div class="holiday-time" id="newYearTimer">Loading...</div>
+            <div class="holiday-date" id="newYearDate"></div>
+          </div>
+
         </div>
 
-        <div class="holiday" aria-label="Countdown to Christmas">
-          <div class="holiday-icon">🎄</div>
-          <p class="holiday-name">Christmas</p>
-          <p class="holiday-time" id="christmasCountdown">Loading countdown…</p>
-          <p class="holiday-date" id="christmasDate"></p>
+      </section>
+
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-symbol">◇</span>
+        <span class="ornament-line"></span>
+      </div>
+
+      <!-- EVENTS -->
+
+      <section class="monument open">
+
+        <button
+          class="monument-toggle"
+          type="button"
+          aria-expanded="true">
+
+          <span class="monument-icon" aria-hidden="true">⚔️</span>
+          <span class="monument-title">Events &amp; Competition</span>
+          <span class="monument-sub">ACFA Competition Center</span>
+          <span class="chevron">⌄</span>
+
+        </button>
+
+        <div class="monument-panel">
+
+          <div class="monument-inner">
+
+            <div class="nav-grid">
+
+              <div class="nav-item">
+                <a
+                  class="nav-link"
+                  href="https://www.chess.com/clubs/matches/and-chess-for-all-official"
+                  target="_blank"
+                  rel="noopener noreferrer">
+
+                  <span class="nav-icon" aria-hidden="true">♟️</span>
+                  <span class="nav-label">Daily Matches</span>
+
+                </a>
+              </div>
+
+              <div class="nav-item">
+                <a
+                  class="nav-link"
+                  href="https://www.chess.com/clubs/events/and-chess-for-all-official"
+                  target="_blank"
+                  rel="noopener noreferrer">
+
+                  <span class="nav-icon" aria-hidden="true">🏆</span>
+                  <span class="nav-label">Club Events</span>
+
+                </a>
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
 
-        <div class="holiday" aria-label="Countdown to New Year's Day">
-          <div class="holiday-icon">🎆</div>
-          <p class="holiday-name">New Year</p>
-          <p class="holiday-time" id="newyearCountdown">Loading countdown…</p>
-          <p class="holiday-date" id="newyearDate"></p>
+      </section>
+
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-symbol">◆</span>
+        <span class="ornament-line"></span>
+      </div>
+
+      <!-- COMMUNITY -->
+
+      <section class="monument">
+
+        <button
+          class="monument-toggle"
+          type="button"
+          aria-expanded="false">
+
+          <span class="monument-icon" aria-hidden="true">🏛️</span>
+          <span class="monument-title">Community</span>
+          <span class="monument-sub">Connect With ACFA</span>
+          <span class="chevron">⌄</span>
+
+        </button>
+
+        <div class="monument-panel">
+
+          <div class="monument-inner">
+
+            <div class="nav-grid">
+
+              <div class="nav-item">
+
+                <a
+                  class="nav-link"
+                  href="https://www.chess.com/clubs/forum/and-chess-for-all-official"
+                  target="_blank"
+                  rel="noopener noreferrer">
+
+                  <span class="nav-icon" aria-hidden="true">📋</span>
+                  <span class="nav-label">Forums</span>
+
+                </a>
+
+              </div>
+
+              <div class="nav-item">
+
+                <a
+                  class="nav-link"
+                  href="https://devilsgambit22.github.io/And-Chess-For-All-Official-Chess-Club/"
+                  target="_blank"
+                  rel="noopener noreferrer">
+
+                  <span class="nav-icon" aria-hidden="true">🌐</span>
+                  <span class="nav-label">Website</span>
+
+                </a>
+
+              </div>
+
+              <div class="nav-item">
+
+                <button
+                  class="copy-nav"
+                  id="copyClubUrl"
+                  type="button">
+
+                  <span class="nav-icon" aria-hidden="true">🔗</span>
+                  <span class="copy-label">Copy Club URL</span>
+
+                </button>
+
+                <p
+                  class="copy-status"
+                  id="copyStatus"
+                  aria-live="polite">
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
         </div>
-      </div>
-    </section>
 
-    <hr>
+      </section>
 
-    <h3>Events &amp; Competition</h3>
-
-    <div class="grid">
-      <div class="item">
-        <div class="emoji">⚔️</div>
-        <a href="https://www.chess.com/clubs/matches/and-chess-for-all-official"
-           target="_blank" rel="noopener noreferrer">
-          Daily Matches
-        </a>
+      <div class="ornament">
+        <span class="ornament-line"></span>
+        <span class="ornament-symbol">◇</span>
+        <span class="ornament-line"></span>
       </div>
 
-      <div class="item">
-        <div class="emoji">🏆</div>
-        <a href="https://www.chess.com/clubs/events/and-chess-for-all-official"
-           target="_blank" rel="noopener noreferrer">
-          Club Events
-        </a>
-      </div>
-    </div>
+      <!-- RECOGNITION -->
 
-    <hr>
+      <section class="monument">
 
-    <h3>Community</h3>
+        <button
+          class="monument-toggle"
+          type="button"
+          aria-expanded="false">
 
-    <div class="grid">
-      <div class="item">
-        <div class="emoji">📋</div>
-        <a href="https://www.chess.com/clubs/forum/and-chess-for-all-official"
-           target="_blank" rel="noopener noreferrer">
-          Forums
-        </a>
-      </div>
+          <span class="monument-icon" aria-hidden="true">👑</span>
+          <span class="monument-title">Recognition</span>
+          <span class="monument-sub">Honor Within ACFA</span>
+          <span class="chevron">⌄</span>
 
-      <div class="item">
-        <div class="emoji">🌐</div>
-        <a href="https://devilsgambit22.github.io/And-Chess-For-All-Official-Chess-Club/"
-           target="_blank" rel="noopener noreferrer">
-          Website
-        </a>
-      </div>
-    </div>
+        </button>
 
-    <div class="copy-wrap">
-      <div class="copy-icon">🔗</div>
-      <button id="copyClubUrl" type="button">Copy Club URL</button>
-      <p id="copyStatus" aria-live="polite"></p>
-    </div>
+        <div class="monument-panel">
 
-    <hr>
+          <div class="monument-inner">
 
-    <h3>Recognition</h3>
+            <div class="nav-grid">
 
-    <div class="grid">
-      <div class="item">
-        <div class="emoji">👑</div>
-        <a href="https://www.chess.com/clubs/forum/view/spotlight-archive"
-           target="_blank" rel="noopener noreferrer">
-          Hall of Honor
-        </a>
-      </div>
+              <div class="nav-item">
 
-      <div class="item">
-        <div class="emoji">⭐</div>
-        <a href="https://www.chess.com/clubs/forum/view/welcome-to-the-acfa-family-monthly-member-board"
-           target="_blank" rel="noopener noreferrer">
-          Member Spotlight
-        </a>
-      </div>
+                <a
+                  class="nav-link"
+                  href="https://www.chess.com/clubs/forum/view/player-of-the-week-189"
+                  target="_blank"
+                  rel="noopener noreferrer">
+
+                  <span class="nav-icon" aria-hidden="true">🏅</span>
+                  <span class="nav-label">Player of the Week</span>
+
+                </a>
+
+              </div>
+
+              <div class="nav-item">
+
+                <a
+                  class="nav-link"
+                  href="https://www.chess.com/clubs/forum/view/welcome-to-the-acfa-family-monthly-member-board"
+                  target="_blank"
+                  rel="noopener noreferrer">
+
+                  <span class="nav-icon" aria-hidden="true">👋</span>
+                  <span class="nav-label">Welcome Board</span>
+
+                </a>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
     </div>
 
   </main>
 
   <script>
+    /* =========================
+       EXPANDABLE SECTIONS
+       ========================= */
 
+    document.querySelectorAll(".monument").forEach(function(section) {
 
-    const holidayDefinitions = [
-      {
-        countdownId: "halloweenCountdown",
-        dateId: "halloweenDate",
-        getTarget(now) {
-          let target = new Date(now.getFullYear(), 9, 31, 0, 0, 0, 0);
-          if (now >= new Date(now.getFullYear(), 10, 1, 0, 0, 0, 0)) {
-            target = new Date(now.getFullYear() + 1, 9, 31, 0, 0, 0, 0);
-          }
-          return target;
-        }
-      },
-      {
-        countdownId: "christmasCountdown",
-        dateId: "christmasDate",
-        getTarget(now) {
-          let target = new Date(now.getFullYear(), 11, 25, 0, 0, 0, 0);
-          if (now >= new Date(now.getFullYear(), 11, 26, 0, 0, 0, 0)) {
-            target = new Date(now.getFullYear() + 1, 11, 25, 0, 0, 0, 0);
-          }
-          return target;
-        }
-      },
-      {
-        countdownId: "newyearCountdown",
-        dateId: "newyearDate",
-        getTarget(now) {
-          return new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
-        }
-      }
-    ];
+      const toggle = section.querySelector(".monument-toggle");
 
-    const holidayDateFormatter = new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric"
+      toggle.addEventListener("click", function() {
+
+        const isOpen = section.classList.contains("open");
+
+        document.querySelectorAll(".monument").forEach(function(otherSection) {
+
+          otherSection.classList.remove("open");
+
+          const otherToggle =
+            otherSection.querySelector(".monument-toggle");
+
+          otherToggle.setAttribute(
+            "aria-expanded",
+            "false"
+          );
+
+        });
+
+        if (!isOpen) {
+          section.classList.add("open");
+
+          toggle.setAttribute(
+            "aria-expanded",
+            "true"
+          );
+        }
+
+      });
+
     });
 
-    function formatRemaining(ms) {
-      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-      const days = Math.floor(totalSeconds / 86400);
-      const hours = Math.floor((totalSeconds % 86400) / 3600);
-      const minutes = Math.floor((totalSeconds % 3600) / 60);
-      const seconds = totalSeconds % 60;
-      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }
 
-    function updateHolidayCountdowns() {
+    /* =========================
+       HOLIDAY COUNTDOWNS
+       ========================= */
+
+    function nextHoliday(monthIndex, day) {
+
       const now = new Date();
 
-      holidayDefinitions.forEach((holiday) => {
-        const target = holiday.getTarget(now);
-        const countdown = document.getElementById(holiday.countdownId);
-        const date = document.getElementById(holiday.dateId);
+      let target =
+        new Date(
+          now.getFullYear(),
+          monthIndex,
+          day,
+          0,
+          0,
+          0,
+          0
+        );
 
-        if (countdown) countdown.textContent = formatRemaining(target - now);
-        if (date) date.textContent = holidayDateFormatter.format(target);
-      });
-    }
+      if (target.getTime() <= now.getTime()) {
 
-    updateHolidayCountdowns();
-    window.setInterval(updateHolidayCountdowns, 1000);
+        target =
+          new Date(
+            now.getFullYear() + 1,
+            monthIndex,
+            day,
+            0,
+            0,
+            0,
+            0
+          );
 
-    const clubUrl = "https://www.chess.com/club/and-chess-for-all-official";
-    const button = document.getElementById("copyClubUrl");
-    const status = document.getElementById("copyStatus");
-
-    button.addEventListener("click", async () => {
-      try {
-        await navigator.clipboard.writeText(clubUrl);
-        button.textContent = "✅ Copied!";
-        status.textContent = "ACFA club URL copied to your clipboard.";
-      } catch (error) {
-        // Fallback for browsers that do not expose the Clipboard API.
-        const textArea = document.createElement("textarea");
-        textArea.value = clubUrl;
-        textArea.setAttribute("readonly", "");
-        textArea.style.position = "fixed";
-        textArea.style.opacity = "0";
-        document.body.appendChild(textArea);
-        textArea.select();
-
-        const copied = document.execCommand("copy");
-        document.body.removeChild(textArea);
-
-        if (copied) {
-          button.textContent = "✅ Copied!";
-          status.textContent = "ACFA club URL copied to your clipboard.";
-        } else {
-          button.textContent = "Copy failed";
-          status.textContent = "Copying was blocked by this browser.";
-        }
       }
 
-      window.setTimeout(() => {
-        button.textContent = "Copy Club URL";
-        status.textContent = "";
-      }, 1800);
-    });
+      return target;
+    }
+
+
+    function nextNewYear() {
+
+      const now = new Date();
+
+      return new Date(
+        now.getFullYear() + 1,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      );
+
+    }
+
+
+    function countdownText(target) {
+
+      let diff =
+        target.getTime() - Date.now();
+
+      if (diff < 0) {
+        diff = 0;
+      }
+
+      const days =
+        Math.floor(diff / 86400000);
+
+      const hours =
+        Math.floor(
+          (diff % 86400000) /
+          3600000
+        );
+
+      const minutes =
+        Math.floor(
+          (diff % 3600000) /
+          60000
+        );
+
+      const seconds =
+        Math.floor(
+          (diff % 60000) /
+          1000
+        );
+
+      return (
+        days + "d " +
+        hours + "h " +
+        minutes + "m " +
+        seconds + "s"
+      );
+
+    }
+
+
+    function dateText(date) {
+
+      return date.toLocaleDateString(
+        undefined,
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        }
+      );
+
+    }
+
+
+    function updateCountdowns() {
+
+      const halloween =
+        nextHoliday(9, 31);
+
+      const christmas =
+        nextHoliday(11, 25);
+
+      const newYear =
+        nextNewYear();
+
+
+      document.getElementById(
+        "halloweenTimer"
+      ).textContent =
+        countdownText(halloween);
+
+
+      document.getElementById(
+        "christmasTimer"
+      ).textContent =
+        countdownText(christmas);
+
+
+      document.getElementById(
+        "newYearTimer"
+      ).textContent =
+        countdownText(newYear);
+
+
+      document.getElementById(
+        "halloweenDate"
+      ).textContent =
+        dateText(halloween);
+
+
+      document.getElementById(
+        "christmasDate"
+      ).textContent =
+        dateText(christmas);
+
+
+      document.getElementById(
+        "newYearDate"
+      ).textContent =
+        dateText(newYear);
+
+    }
+
+
+    updateCountdowns();
+
+    setInterval(
+      updateCountdowns,
+      1000
+    );
+
+
+    /* =========================
+       COPY CLUB URL
+       ========================= */
+
+    const clubUrl =
+      "https://www.chess.com/club/and-chess-for-all-official";
+
+    const copyButton =
+      document.getElementById(
+        "copyClubUrl"
+      );
+
+    const copyStatus =
+      document.getElementById(
+        "copyStatus"
+      );
+
+
+    copyButton.addEventListener(
+      "click",
+      async function() {
+
+        let copied = false;
+
+        try {
+
+          await navigator.clipboard.writeText(
+            clubUrl
+          );
+
+          copied = true;
+
+        }
+
+        catch (error) {
+
+          const textarea =
+            document.createElement(
+              "textarea"
+            );
+
+          textarea.value =
+            clubUrl;
+
+          textarea.setAttribute(
+            "readonly",
+            ""
+          );
+
+          textarea.style.position =
+            "absolute";
+
+          textarea.style.left =
+            "-9999px";
+
+          document.body.appendChild(
+            textarea
+          );
+
+          textarea.select();
+
+          try {
+
+            copied =
+              document.execCommand(
+                "copy"
+              );
+
+          }
+
+          catch (fallbackError) {
+
+            copied = false;
+
+          }
+
+          document.body.removeChild(
+            textarea
+          );
+
+        }
+
+
+        const label =
+          copyButton.querySelector(
+            ".copy-label"
+          );
+
+
+        if (copied) {
+
+          label.textContent =
+            "✓ Copied!";
+
+          copyStatus.textContent =
+            "ACFA club URL copied.";
+
+        }
+
+        else {
+
+          label.textContent =
+            "Copy Failed";
+
+          copyStatus.textContent =
+            "Clipboard access was blocked.";
+
+        }
+
+
+        setTimeout(
+          function() {
+
+            label.textContent =
+              "Copy Club URL";
+
+            copyStatus.textContent =
+              "";
+
+          },
+          1800
+        );
+
+      }
+    );
+
+
+    /* =========================
+       AMBIENT PARTICLES
+       ========================= */
+
+    const particleLayer =
+      document.getElementById(
+        "particles"
+      );
+
+    const reduceMotion =
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+
+    if (!reduceMotion) {
+
+      const particleCount = 22;
+
+      for (
+        let i = 0;
+        i < particleCount;
+        i++
+      ) {
+
+        const particle =
+          document.createElement(
+            "span"
+          );
+
+        particle.className =
+          "particle";
+
+        particle.style.left =
+          Math.random() * 100 + "%";
+
+        particle.style.animationDuration =
+          10 +
+          Math.random() * 12 +
+          "s";
+
+        particle.style.animationDelay =
+          -Math.random() * 20 +
+          "s";
+
+        const size =
+          2 +
+          Math.random() * 2.2;
+
+        particle.style.width =
+          size + "px";
+
+        particle.style.height =
+          size + "px";
+
+        particleLayer.appendChild(
+          particle
+        );
+
+      }
+
+    }
   </script>
 
 </body>
